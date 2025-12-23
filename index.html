@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GDQP - Bánh Mì Pita (Full Text)</title>
+    <title>GDQP - Bánh Mì Pita (Mobile Fix)</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,19 +19,16 @@
 
         * { box-sizing: border-box; font-family: 'Be Vietnam Pro', sans-serif; -webkit-tap-highlight-color: transparent; }
         
+        /* CẤU HÌNH MẶC ĐỊNH (DESKTOP) */
         body { 
             background-color: var(--bg-body); color: var(--text-light);
             margin: 0; padding: 0; min-height: 100vh;
             display: flex; flex-direction: column;
-            overflow: hidden; /* Chặn cuộn trang ngoài ý muốn */
+            overflow: hidden; /* Desktop thì ẩn scroll body để scroll trong khung */
         }
 
-        /* --- INPUT KHÔNG BỊ ZOOM --- */
-        input, select, textarea {
-            font-size: 16px !important; /* Quan trọng: Ngăn iOS tự zoom */
-        }
+        input, select, textarea { font-size: 16px !important; }
 
-        /* --- LAYOUT --- */
         .app-container {
             display: grid;
             grid-template-columns: 260px 1fr 280px;
@@ -50,8 +47,9 @@
             display: none; justify-content: space-between; align-items: center;
             padding: 15px 20px; background: var(--bg-card);
             border-bottom: 1px solid var(--border); z-index: 50;
+            position: fixed; top: 0; left: 0; width: 100%;
         }
-        .hamburger { font-size: 1.5rem; cursor: pointer; color: var(--accent); }
+        .hamburger { font-size: 1.5rem; cursor: pointer; color: var(--accent); padding: 5px; }
 
         /* Cột Trái: Nav */
         .col-nav { grid-column: 1; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
@@ -76,19 +74,19 @@
             text-align: justify; color: #ffffff;
         }
 
-        .opt-list { display: flex; flex-direction: column; gap: 12px; }
+        .opt-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
         .opt-btn {
             background: #1f3a3a; padding: 15px; border-radius: 12px;
             cursor: pointer; transition: 0.1s; border: 2px solid transparent;
             font-size: 1rem; color: var(--text-light); display: flex;
         }
-        .opt-char { font-weight: 700; margin-right: 12px; min-width: 25px; color: var(--accent); }
+        .opt-char { font-weight: 700; margin-right: 12px; min-width: 25px; color: var(--accent); flex-shrink: 0; }
         .opt-btn.correct { background: rgba(38, 166, 154, 0.25); border-color: var(--accent); }
         .opt-btn.wrong { background: rgba(239, 83, 80, 0.25); border-color: var(--accent-red); opacity: 0.8; }
         .opt-btn.disabled { pointer-events: none; }
 
         /* Footer Buttons */
-        .nav-footer { margin-top: auto; padding-top: 20px; display: flex; gap: 15px; }
+        .nav-footer { margin-top: auto; display: flex; gap: 15px; }
         .btn {
             padding: 14px; border: none; border-radius: 10px; font-weight: 700;
             font-size: 1rem; cursor: pointer; color: white; flex: 1;
@@ -110,27 +108,62 @@
         .start-form {
             background: var(--bg-card); padding: 30px; border-radius: 20px;
             width: 100%; max-width: 420px; border: 1px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .inp-field {
             width: 100%; padding: 14px; background: #0f1c1c; border: 1px solid var(--border);
             color: white; border-radius: 8px; outline: none; margin-bottom: 15px;
         }
 
-        /* --- MOBILE RESPONSIVE --- */
+        /* --- MOBILE RESPONSIVE FIX (QUAN TRỌNG) --- */
         @media (max-width: 900px) {
-            .app-container { display: flex; flex-direction: column; padding: 0; height: auto; min-height: 100vh; padding-top: 60px; }
-            .mobile-header { display: flex; position: fixed; top: 0; width: 100%; }
+            /* 1. Cho phép body cuộn tự do trên mobile */
+            body { 
+                overflow: auto !important; 
+                display: block; 
+                height: auto; 
+            }
+
+            /* 2. Điều chỉnh layout container để nội dung dài đẩy trang xuống */
+            .app-container { 
+                display: block; 
+                padding: 20px; 
+                padding-top: 80px; /* Chừa chỗ cho header */
+                height: auto; 
+                min-height: 100vh;
+                overflow: visible;
+            }
+
+            .mobile-header { display: flex; }
             
+            /* 3. Menu bên trái và phải ẩn đi */
             .col-nav, .col-info { 
-                position: fixed; top: 0; right: -100%; width: 300px; height: 100%;
+                position: fixed; top: 0; right: -100%; width: 280px; height: 100%;
                 background: var(--bg-card); z-index: 100; transition: 0.3s; padding: 20px;
                 box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+                overflow-y: auto; /* Cho phép cuộn menu nếu menu dài */
             }
             .col-nav.open { right: 0; }
             
-            .col-main { flex: 1; height: auto; }
-            .question-box { border: none; border-radius: 0; }
+            /* 4. Phần câu hỏi chính */
+            .col-main { width: 100%; height: auto; display: block; }
+            .question-box { 
+                border: none; 
+                border-radius: 0; 
+                padding: 0; 
+                background: transparent; 
+                overflow: visible; 
+                height: auto;
+                display: block; /* Bỏ flex để tránh căn giữa dọc */
+            }
+
+            .q-text { font-size: 1.1rem; }
+            .opt-btn { padding: 12px; }
+
+            /* 5. Nút điều hướng dính ở dưới hoặc trôi theo nội dung */
+            .nav-footer { margin-top: 20px; padding-bottom: 20px; }
             
+            /* Overlay đen mờ khi mở menu */
             #overlay-bg {
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(0,0,0,0.8); z-index: 90; display: none;
@@ -203,65 +236,65 @@
 <script>
     // Dữ liệu ĐẦY ĐỦ từ file DOCX của bạn (Không rút gọn)
     const questionBank = [
-        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc và cùng quân dân Cam-pu-chia chiến thắng chế độ diệt chủng (gọi tắt là chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc), tập đoàn Pôn Pốt – Iêng Xary phát động chiến tranh xâm lược Việt Nam vào ngày", options: ["30-4-1975.", "30-4-1978.", "30-4-1977.", "30-4-1976."], a: 2}, // 1C
-        {q: "Cho thông tin sau: “Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, ngày (.....), Bộ Chính trị và Quân uỷ Trung ương quyết định phát động chiến tranh nhân dân, kiên quyết phản công và tiến công tập đoàn Pôn Pốt – Iêng Xary một cách chủ động, liên tục bằng mọi lực lượng”. Thông tin cần điền vào chỗ (….) trong câu trên là:", options: ["15-6-1976", "15-6-1977", "15-6-1978", "15-6-1979"], a: 2}, // 2C
-        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, Mặt trận Đoàn kết dân tộc cứu nước Cam-pu-chia được thành lập vào ngày", options: ["02-12-1976.", "02-12-1977.", "02-12-1978.", "02-12-1979."], a: 2}, // 3C
-        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, tập đoàn Pôn Pốt – Iêng Xary mở cuộc tiến công trên toàn tuyến biên giới Tây Nam nước ta vào ngày", options: ["23-12-1975.", "23-12-1976.", "23-12-1977.", "23-12-1978."], a: 3}, // 4D
-        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, thủ đô Phnôm Pênh hoàn toàn được giải phóng vào ngày", options: ["07-01-1976.", "07-01-1977.", "07-01-1978.", "07-01-1979."], a: 3}, // 5D
-        {q: "Cho thông tin sau: “Một trong những nét chính nghệ thuật quân sự trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc là: nhận thức, đánh giá đúng âm mưu, bản chất, thủ đoạn của đối tượng tác chiến; chủ động tiến hành (.....). Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["chiến tranh nhân dân", "chiến tranh nhân dân tại chỗ", "chiến tranh nhân dân tại chỗ rộng khắp", "chiến tranh nhân dân tại chỗ đồng loạt"], a: 2}, // 8C
-        {q: "Cho thông tin sau: “Ngày (.....), chính quyền Trung Quốc huy động lực lượng lớn tiến công sang lãnh thổ Việt Nam; phối hợp bộ binh, xe tăng, xe bọc thép và pháo binh đánh chiếm một số thị xã, tàn phá cơ sở hạ tầng, bệnh viện, trường học, gây nhiều tổn thất về người và tài sản ở các tỉnh dọc biên giới phía Bắc nước ta, từ Quảng Ninh đến Lai Châu”. Thông tin cần điền vào chỗ (…..) trong câu trên là:", options: ["17-02-1978", "17-3-1978", "17-02-1979", "17-3-1979"], a: 2}, // 10C
-        {q: "Trong cuộc chiến đấu bảo vệ biên giới phía Bắc của Tổ quốc, Chủ tịch nước Cộng hoà xã hội chủ nghĩa Việt Nam công bố Lệnh Tổng động viên trong cả nước để bảo vệ Tổ quốc vào ngày", options: ["05-01-1979.", "05-02-1979.", "05-3-1979.", "05-4-1979."], a: 2}, // 11C
-        {q: "Cho thông tin sau: “Trong cuộc chiến đấu bảo vệ biên giới phía Bắc của Tổ quốc, đến ngày (.….), về cơ bản, Trung Quốc đã rút quân khỏi nước ta”. Thông tin cần điền vào chỗ (…..) trong câu trên là:", options: ["15-3-1979", "16-3-1979", "17-3-1979", "18-3-1979"], a: 3}, // 13D
-        {q: "Chính quyền Trung Quốc dùng vũ lực đánh chiếm nhóm đảo phía Tây quần đảo Hoàng Sa vào năm", options: ["1971.", "1972.", "1973.", "1974."], a: 3}, // 17D
-        {q: "Chính quyền Trung Quốc sử dụng vũ lực chiếm đóng trái phép một số bãi đá thuộc quần đảo Trường Sa của Việt Nam: Chữ Thập, Châu Viên, Ga Ven, Tư Nghĩa, Gạc Ma, Xu Bi vào năm", options: ["1986.", "1987.", "1988.", "1989."], a: 2}, // 18C
-        {q: "Hiện nay hệ thống nhà trường quân đội có bao nhiêu học viện và các trường sĩ quan, đại học:", options: ["10 học viện - 11 trường sĩ quan, đại học", "11 học viện - 10 trường sĩ quan, đại học", "9 học viện - 11 trường sĩ quan, đại học", "10 học viện - 12 trường sĩ quan, đại học"], a: 0}, // 19A
-        {q: "Cho thông tin sau: “Một trong những yêu cầu đối với công tác tuyển sinh, đào tạo trong các trường Quân đội, Công an là: tổ chức tuyển sinh (.....); tạo đồng thuận của thí sinh, gia đình thí sinh và xã hội”. Từ ngữ cần điền vào chỗ (.....) trong câu trên là:", options: ["đúng pháp luật, dân chủ, công khai, minh bạch, chính xác, công bằng", "đúng quy chế, dân chủ, công khai, minh bạch, chính xác, công bằng", "đúng quy định, dân chủ, công tâm, công khai, công bằng, minh bạch", "đúng hướng dẫn, công tâm, công khai, công minh, công bằng, chính xác"], a: 0}, // 20A
-        {q: "Trong những câu sau, câu nào nói về nghĩa vụ của học viên trường Quân đội, Công an?", options: ["Học viên được bảo đảm cơ sở vật chất, trang thiết bị, đồ dùng phục vụ học tập.", "Học viên được nghỉ hè, nghỉ ngày cuối tuần, ngày lễ, ngày Tết.", "Học viên sẵn sàng nhận nhiệm vụ theo phân công của Bộ Quốc phòng, Bộ Công an khi ra trường.", "Học viên được hưởng chế độ khen thưởng theo quy định của Bộ Quốc phòng, Bộ Công an."], a: 2}, // 21C
-        {q: "Trong các cơ sở đào tạo sau của Quân đội, cơ sở đào tạo nào không tuyển học sinh trung học phổ thông?", options: ["Học viện Hậu cần", "Học viện Lục quân", "Học viện Biên phòng", "Học viện Quân y"], a: 1}, // 22B
-        {q: "Hạ sĩ quan, binh sĩ tại ngũ theo quy định của pháp luật về nghĩa vụ quân sự thuộc đối tượng tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội nếu thời gian phục vụ tại ngũ (tính đến tháng 4 năm tuyển sinh)", options: ["đủ 6 tháng trở lên.", "đủ 9 tháng trở lên.", "đủ 12 tháng trở lên.", "đủ 15 tháng trở lên."], a: 2}, // 23C
-        {q: "Quân nhân chuyên nghiệp, công nhân và viên chức quốc phòng thuộc đối tượng tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội nếu thời gian phục vụ trong Quân đội (tính đến tháng 9 năm tuyển sinh)", options: ["đủ 6 tháng trở lên.", "đủ 12 tháng trở lên.", "đủ 18 tháng trở lên.", "đủ 24 tháng trở lên."], a: 1}, // 24B
-        {q: "Thanh niên ngoài Quân đội dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội phải có độ tuổi (tính đến năm dự tuyển)", options: ["không quá 20 tuổi.", "không quá 21 tuổi.", "không quá 22 tuổi.", "không quá 23 tuổi."], a: 1}, // 25B
-        {q: "Quân nhân tại ngũ hoặc đã xuất ngũ và công dân hoàn thành nghĩa vụ tham gia Công an nhân dân dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội phải có độ tuổi (tính đến năm dự tuyển)", options: ["không quá 21 tuổi.", "không quá 22 tuổi.", "không quá 23 tuổi.", "không quá 24 tuổi."], a: 2}, // 26C
-        {q: "Trong các phương thức sau, phương thức nào không áp dụng đối với tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội?", options: ["Xét tuyển thẳng, ưu tiên xét tuyển và xét tuyển học sinh giỏi cấp trung học phổ thông.", "Xét tuyển từ kết quả kì thi đánh giá năng lực do các trường đại học trong nước tổ chức.", "Xét tuyển từ kết quả kì thi đánh giá năng lực do các trường đại học nước ngoài tổ chức.", "Xét tuyển từ kì thi đánh giá năng lực do Bộ Quốc phòng tổ chức."], a: 2}, // 27C
-        {q: "Thí sinh dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội", options: ["đều phải qua sơ tuyển.", "không phải qua sơ tuyển nếu là học sinh giỏi cấp trung học phổ thông.", "không phải qua sơ tuyển nếu có anh (chị) ruột đã vào học một trường trong Quân đội.", "không phải qua sơ tuyển nếu bố (mẹ) đẻ là quân nhân."], a: 0}, // 28A
-        {q: "Ngành nào trong các ngành sau được đào tạo ở Học viện An ninh nhân dân?", options: ["An ninh mạng và phòng chống tội phạm sử dụng công nghệ cao", "Trinh sát kĩ thuật", "Nghiệp vụ cảnh sát", "Kĩ thuật Công an nhân dân"], a: 0}, // 29A
-        {q: "Trong các trường hợp sau, trường hợp nào không thuộc đối tượng tuyển sinh đào tạo trình độ đại học chính quy tuyển mới trong trường Công an?", options: ["Chỉ huy từ cấp đội trở lên thuộc Công an đơn vị, địa phương.", "Học sinh Trường Văn hoá.", "Chiến sĩ nghĩa vụ Công an.", "Công dân thường trú tại địa phương nơi đăng kí sơ tuyển."], a: 0}, // 30A
-        {q: "Những công việc nào trong các công việc sau không có trong nội dung sơ tuyển thí sinh dự tuyển đào tạo trình độ đại học chính quy tuyển mới trong trường Công an?", options: ["Kiểm tra bằng tốt nghiệp và học bạ trung học phổ thông.", "Thẩm tra, xác minh, kết luận tiêu chuẩn chính trị.", "Kiểm tra sức khoẻ, năng khiếu.", "Chụp ảnh bố đẻ và mẹ đẻ của thí sinh."], a: 3}, // 31D
-        {q: "Một trong chức năng, nhiệm vụ của Bộ Quốc phòng là", options: ["tham mưu chiến lược về các chủ trương, chính sách...", "tham mưu với Đảng và Nhà nước về đường lối, nhiệm vụ quân sự, quốc phòng bảo vệ Tổ quốc.", "tham mưu, chỉ đạo xây dựng nền quốc phòng toàn dân.", "tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng..."], a: 1}, // 32B
-        {q: "Một trong chức năng, nhiệm vụ của Bộ Tổng tham mưu Quân đội nhân dân Việt nam là", options: ["tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng, sẵn sàng chiến đấu", "tham mưu chiến lược về các chủ trương, chính sách...", "quản lí nhà nước về lĩnh vực quân sự, quốc phòng...", "tổ chức thực hiện việc xây dựng, quản lí..."], a: 0}, // 33A
-        {q: "Một trong chức năng, nhiệm vụ của Tổng cục chính trị Quân đội nhân dân Việt nam là", options: ["giúp Quân uỷ Trung ương quyết định những chủ trương, biện pháp lớn về công tác Đảng, công tác chính trị trong Quân đội.", "quản lí nhà nước về lĩnh vực quân sự, quốc phòng trong phạm vi cả nước.", "chỉ huy, điều hành và tổ chức, chỉ đạo phát triển Quân đội nhân dân, Dân quân tự vệ.", "tổ chức thực hiện việc xây dựng, quản lí, chỉ huy Quân đội nhân dân, Dân quân tự vệ."], a: 0}, // 34A
-        {q: "Một trong chức năng, nhiệm vụ của quân khu là", options: ["Tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng, sẵn sàng chiến đấu.", "Tham mưu, chỉ đạo xây dựng lực lượng phòng không, không quân, hải quân", "Tham mưu, chỉ đạo xây dựng nền quốc phòng toàn dân.", "Tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng chuyên ngành..."], a: 2}, // 35C
-        {q: "Một trong chức năng, nhiệm vụ của quân đoàn là", options: ["trực tiếp chiến đấu hoặc bảo đảm chiến đấu, có vũ khí, trang bị kĩ thuật và chiến thuật riêng.", "tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng chuyên ngành...", "có thể tác chiến độc lập hoặc đảm nhiệm một hướng chiến dịch.", "tham gia tác chiến hiệp đồng quân, binh chủng."], a: 2}, // 36C
-        {q: "Cho thông tin sau: “Quân hiệu của Quân đội nhân dân Việt Nam là (.....) của Quân đội nhân dân Việt Nam.” Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["biểu trưng", "biểu tượng", "hình tượng", "hình ảnh"], a: 1}, // 37B
-        {q: "Quân hiệu của Quân đội nhân dân Việt Nam hình tròn, có đường kính", options: ["36 mm hoặc 33 mm hoặc 28 mm.", "38 mm hoặc 35 mm hoặc 30 mm.", "40 mm hoặc 37 mm hoặc 32 mm.", "42 mm hoặc 39 mm hoặc 34 mm."], a: 0}, // 38A
-        {q: "Hạ sĩ quan Quân đội nhân dân Việt Nam có", options: ["hai bậc: Hạ sĩ, Trung sĩ.", "hai bậc: Trung sĩ, Thượng sĩ.", "ba bậc: Hạ sĩ, Trung sĩ, Thượng sĩ.", "bốn bậc: Hạ sĩ, Trung sĩ, Thượng sĩ, Đại sĩ."], a: 2}, // 39C
-        {q: "Một trong chức năng, nhiệm vụ của Bộ Công an là", options: ["bảo vệ các khu vực làm việc, các hoạt động, hội nghị của Đảng, Nhà nước Việt Nam.", "tham mưu với Đảng, Nhà nước về bảo vệ an ninh quốc gia, bảo đảm trật tự, an toàn xã hội.", "tham mưu, hướng dẫn và tổ chức thực hiện quản lí nhà nước về trật tự xã hội.", "thực hiện biện pháp vũ trang bảo vệ an ninh quốc gia, bảo đảm trật tự, an toàn xã hội."], a: 1}, // 40B
-        {q: "Công an hiệu của Công an nhân dân Việt Nam hình tròn, có đường kính", options: ["34 mm.", "35 mm.", "36 mm.", "37 mm."], a: 2}, // 41C
-        {q: "Bên ngoài Công an hiệu của Công an nhân dân Việt Nam có cành tùng kép màu vàng bao quanh liền thành một khối", options: ["cao 52 mm, rộng 62 mm", "cao 54 mm, rộng 64 mm", "cao 56 mm, rộng 66 mm", "cao 58 mm, rộng 68 mm"], a: 1}, // 42B
-        {q: "Sĩ quan chuyên môn kĩ thuật Công an nhân dân Việt Nam cấp tá", options: ["có một bậc: Thiếu tá.", "có ba bậc: Thiếu tá, Trung tá, Thượng tá.", "có hai bậc: Thiếu tá,Trung tá.", "có bốn bậc: Thiếu tá, Trung tá, Thượng tá, Đại tá."], a: 1}, // 43B
-        {q: "Cho thông tin sau: “Phù hiệu Công an nhân dân Việt Nam là (…..) quy định để chỉ tổ chức, lực lượng.” Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["dấu hiệu", "lô-gô", "hình hiệu", "hình ảnh"], a: 0}, // 44A
-        {q: "Quần áo, mũ kê pi và cà vạt của Cảnh sát giao thông Việt Nam có màu", options: ["xanh rêu.", "lúa chín vàng.", "vàng.", "xanh lam."], a: 1}, // 45B
-        {q: "Ngắm bắn là xác định góc bắn và hướng bắn cho súng để đưa quỹ đạo đường đạn đi qua", options: ["mục tiêu.", "điểm định bắn trúng.", "mục tiêu định bắn trúng.", "điểm định bắn trúng trên mục tiêu."], a: 3}, // 46D
-        {q: "Đường ngắm cơ bản là đường thẳng từ mắt người ngắm qua điểm chính giữa mép trên khe ngắm đến", options: ["mép trên đầu ngắm.", "điểm chính giữa mép trên đầu ngắm.", "mục tiêu.", "điểm chính giữa mục tiêu."], a: 1}, // 47B
-        {q: "Điểm được xác định trước sao cho khi ngắm vào điểm đó để bắn thì quỹ đạo đường đạn đi qua điểm định bắn trúng trên mục tiêu được gọi là", options: ["điểm ngắm đúng.", "điểm ngắm chụm.", "điểm ngắm trúng.", "điểm ngắm cơ bản."], a: 0}, // 48A
-        {q: "Đường ngắm đúng là đường ngắm cơ bản được dóng vào điểm ngắm đã xác định với điều kiện", options: ["mặt súng thăng bằng.", "mặt súng được cố định.", "nòng súng thăng bằng.", "nòng súng được cố định."], a: 0}, // 49A
-        {q: "Khi đường ngắm cơ bản đã chính xác và đã có điểm ngắm đúng, nếu mặt súng nghiêng về bên nào thì điểm chạm trên mục tiêu sẽ", options: ["lệch và thấp về bên đó", "lệch và cao về bên đó.", "lệch về bên đó.", "cao về bên đó."], a: 2}, // 50C
-        {q: "Động tác nằm bắn không tì súng tiểu liên AK gồm:", options: ["động tác chuẩn bị bắn, động tác bắn, động tác thôi bắn.", "động tác chuẩn bị bắn, động tác bắn, động tác đứng dậy.", "động tác lắp đạn, động tác bắn, động tác tháo đạn.", "động tác gương súng, động tác ngắm, động tác bóp cò."], a: 0}, // 52A
-        {q: "Khẩu lệnh bắt đầu thực hiện động tác nằm bắn súng tiểu liên AK (có tì hoặc không có tì) là:", options: ["“Nằm bắn”.", "“Nằm chuẩn bị bắn”.", "“Chuẩn bị”.", "“Chuẩn bị bắn”."], a: 1}, // 53B
-        {q: "Trong chuẩn bị tư thế nằm bắn không tì súng tiểu liên AK, khi nghe dứt khẩu lệnh, người bắn về tư thế xách súng, sau đó thực hiện", options: ["2 cử động.", "3 cử động.", "4 cử động.", "5 cử động."], a: 1}, // 54B
-        {q: "Ở cử động 1 chuẩn bị tư thế động tác nằm bắn, người bắn bước chân phải lên một bước dài chếch theo hướng mũi bàn chân phải, dùng mũi bàn chân trái làm trụ, xoay gót bàn chân trái sang trái để người hướng theo hướng", options: ["gót bàn chân trái.", "gót bàn chân phải.", "mũi bàn chân trái.", "mũi bàn chân phải."], a: 3}, // 55D
-        {q: "Ở cử động 2 chuẩn bị tư thế động tác nằm bắn, người bắn hạ cẳng tay trái xuống đất, khuỷu tay ở phía trước, cách hướng bàn chân phải khoảng", options: ["10 cm.", "15 cm.", "20 cm.", "25 cm."], a: 1}, // 56B
-        {q: "Cho thông tin sau: “Trong động tác lắp đạn nằm bắn không tì súng tiểu liên AK, người bắn dùng tay phải tháo hộp tiếp đạn không có đạn ở súng ra, đưa cho tay trái, (...) bàn tay trái kẹp hộp tiếp đạn vào má phải ốp lót tay sao cho cửa hộp tiếp đạn quay vào thân người, sống hộp tiếp đạn hướng xuống đất. Từ ngữ cần điền vào chỗ (...) trong câu trên là:", options: ["dùng ngón út và ngón áp út", "dùng ngón áp út và ngón giữa", "dùng ngón giữa và ngón cái", "dùng ngón trỏ và ngón cái ."], a: 1}, // 57B
-        {q: "Khi gương súng trong động tác nằm bắn không tì súng tiểu liên AK phải bảo đảm các yếu tố:", options: ["“bằng, chắc, đều”.", "“chắc, đều, bền”.", "“bằng, chắc, đều, bền”.", "“bằng, chắc, đều, êm”."], a: 2}, // 58C
-        {q: "Khi thực hiện động tác ngắm trong kĩ thuật nằm bắn không tì súng tiểu liên AK cần", options: ["áp má phải vào báng súng với lực vừa phải.", "tránh áp má phải vào báng súng.", "áp má phải vào báng súng thật chặt.", "gối má phải lên báng súng."], a: 0}, // 59A
-        {q: "Khi thực hiện động tác ngắm trong kĩ thuật nằm bắn không tì súng tiểu liên AK người bắn", options: ["có thể nheo một mắt hoặc mở cả hai mắt.", "bắt buộc phải nheo mắt trái.", "bắt buộc phải nheo mắt phải.", "bắt buộc phải mở hai mắt."], a: 0}, // 60A
-        {q: "Cho thông tin sau: “Trong kĩ thuật nằm bắn không tì súng tiểu liên AK, khi bóp cò cần dùng (…) của ngón trỏ tay phải để bóp cò, mặt trong ngón tay trỏ sát gần vào tay cầm. Từ ngữ cần điền vào chỗ (…) trong câu trên là:", options: ["phần cuối đốt thứ hai, đầu đốt thứ ba", "phần cuối đốt thứ nhất, đầu đốt thứ hai", "phần giữa đốt thứ nhất", "phần giữa đốt thứ hai"], a: 1}, // 23B (Trùng số, đã để cuối theo yêu cầu)
-        {q: "Cho thông tin sau: “Trong kĩ thuật nằm bắn không tì súng tiểu liên AK, khi bóp cò cần bảo đảm (…) theo trục nòng súng đến khi đạn nổ.", options: ["êm, đều, từ từ, thẳng về sau", "êm, đều, nhanh, thẳng về sau", "êm, đều, từ từ, thẳng", "êm, đều, nhanh, thẳng"], a: 0}, // 61A
-        {q: "Kết quả ngắm chụm xếp loại Giỏi nếu ba điểm chấm nằm trong vòng tròn, đường kính", options: ["2 mm.", "3 mm.", "4 mm.", "5 mm."], a: 0}, // 62D
-        {q: "Kết quả ngắm chụm xếp loại Đạt nếu ba điểm chấm nằm trong vòng tròn, đường kính", options: ["7 mm.", "8 mm.", "9 mm.", "10 mm."], a: 3}, // 63D
-        {q: "Khung bia nền trắng (để dán bia số 4) có kích thước là", options: ["70 cm x 70 cm.", "75 cm x 75 cm.", "80 cm x 80 cm.", "85 cm x 85 cm."], a: 1}, // 64B
-        {q: "Cự li bắn bia mục tiêu số 4 là", options: ["150 m.", "130 m.", "120 m.", "100 m."], a: 3}, // 65D
-        {q: "Trong bài bắn vào mục tiêu bia số 4, kết quả bắn xếp loại Không đạt nếu tổng số điểm sau 3 phát bắn dưới", options: ["15 điểm.", "16 điểm.", "17 điểm.", "18 điểm."], a: 0}, // 66A
+        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc và cùng quân dân Cam-pu-chia chiến thắng chế độ diệt chủng (gọi tắt là chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc), tập đoàn Pôn Pốt – Iêng Xary phát động chiến tranh xâm lược Việt Nam vào ngày", options: ["30-4-1975.", "30-4-1978.", "30-4-1977.", "30-4-1976."], a: 2}, 
+        {q: "Cho thông tin sau: “Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, ngày (.....), Bộ Chính trị và Quân uỷ Trung ương quyết định phát động chiến tranh nhân dân, kiên quyết phản công và tiến công tập đoàn Pôn Pốt – Iêng Xary một cách chủ động, liên tục bằng mọi lực lượng”. Thông tin cần điền vào chỗ (….) trong câu trên là:", options: ["15-6-1976", "15-6-1977", "15-6-1978", "15-6-1979"], a: 2}, 
+        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, Mặt trận Đoàn kết dân tộc cứu nước Cam-pu-chia được thành lập vào ngày", options: ["02-12-1976.", "02-12-1977.", "02-12-1978.", "02-12-1979."], a: 2}, 
+        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, tập đoàn Pôn Pốt – Iêng Xary mở cuộc tiến công trên toàn tuyến biên giới Tây Nam nước ta vào ngày", options: ["23-12-1975.", "23-12-1976.", "23-12-1977.", "23-12-1978."], a: 3}, 
+        {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc, thủ đô Phnôm Pênh hoàn toàn được giải phóng vào ngày", options: ["07-01-1976.", "07-01-1977.", "07-01-1978.", "07-01-1979."], a: 3}, 
+        {q: "Cho thông tin sau: “Một trong những nét chính nghệ thuật quân sự trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc là: nhận thức, đánh giá đúng âm mưu, bản chất, thủ đoạn của đối tượng tác chiến; chủ động tiến hành (.....). Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["chiến tranh nhân dân", "chiến tranh nhân dân tại chỗ", "chiến tranh nhân dân tại chỗ rộng khắp", "chiến tranh nhân dân tại chỗ đồng loạt"], a: 2}, 
+        {q: "Cho thông tin sau: “Ngày (.....), chính quyền Trung Quốc huy động lực lượng lớn tiến công sang lãnh thổ Việt Nam; phối hợp bộ binh, xe tăng, xe bọc thép và pháo binh đánh chiếm một số thị xã, tàn phá cơ sở hạ tầng, bệnh viện, trường học, gây nhiều tổn thất về người và tài sản ở các tỉnh dọc biên giới phía Bắc nước ta, từ Quảng Ninh đến Lai Châu”. Thông tin cần điền vào chỗ (…..) trong câu trên là:", options: ["17-02-1978", "17-3-1978", "17-02-1979", "17-3-1979"], a: 2}, 
+        {q: "Trong cuộc chiến đấu bảo vệ biên giới phía Bắc của Tổ quốc, Chủ tịch nước Cộng hoà xã hội chủ nghĩa Việt Nam công bố Lệnh Tổng động viên trong cả nước để bảo vệ Tổ quốc vào ngày", options: ["05-01-1979.", "05-02-1979.", "05-3-1979.", "05-4-1979."], a: 2}, 
+        {q: "Cho thông tin sau: “Trong cuộc chiến đấu bảo vệ biên giới phía Bắc của Tổ quốc, đến ngày (.….), về cơ bản, Trung Quốc đã rút quân khỏi nước ta”. Thông tin cần điền vào chỗ (…..) trong câu trên là:", options: ["15-3-1979", "16-3-1979", "17-3-1979", "18-3-1979"], a: 3}, 
+        {q: "Chính quyền Trung Quốc dùng vũ lực đánh chiếm nhóm đảo phía Tây quần đảo Hoàng Sa vào năm", options: ["1971.", "1972.", "1973.", "1974."], a: 3}, 
+        {q: "Chính quyền Trung Quốc sử dụng vũ lực chiếm đóng trái phép một số bãi đá thuộc quần đảo Trường Sa của Việt Nam: Chữ Thập, Châu Viên, Ga Ven, Tư Nghĩa, Gạc Ma, Xu Bi vào năm", options: ["1986.", "1987.", "1988.", "1989."], a: 2}, 
+        {q: "Hiện nay hệ thống nhà trường quân đội có bao nhiêu học viện và các trường sĩ quan, đại học:", options: ["10 học viện - 11 trường sĩ quan, đại học", "11 học viện - 10 trường sĩ quan, đại học", "9 học viện - 11 trường sĩ quan, đại học", "10 học viện - 12 trường sĩ quan, đại học"], a: 0}, 
+        {q: "Cho thông tin sau: “Một trong những yêu cầu đối với công tác tuyển sinh, đào tạo trong các trường Quân đội, Công an là: tổ chức tuyển sinh (.....); tạo đồng thuận của thí sinh, gia đình thí sinh và xã hội”. Từ ngữ cần điền vào chỗ (.....) trong câu trên là:", options: ["đúng pháp luật, dân chủ, công khai, minh bạch, chính xác, công bằng", "đúng quy chế, dân chủ, công khai, minh bạch, chính xác, công bằng", "đúng quy định, dân chủ, công tâm, công khai, công bằng, minh bạch", "đúng hướng dẫn, công tâm, công khai, công minh, công bằng, chính xác"], a: 0}, 
+        {q: "Trong những câu sau, câu nào nói về nghĩa vụ của học viên trường Quân đội, Công an?", options: ["Học viên được bảo đảm cơ sở vật chất, trang thiết bị, đồ dùng phục vụ học tập.", "Học viên được nghỉ hè, nghỉ ngày cuối tuần, ngày lễ, ngày Tết.", "Học viên sẵn sàng nhận nhiệm vụ theo phân công của Bộ Quốc phòng, Bộ Công an khi ra trường.", "Học viên được hưởng chế độ khen thưởng theo quy định của Bộ Quốc phòng, Bộ Công an."], a: 2}, 
+        {q: "Trong các cơ sở đào tạo sau của Quân đội, cơ sở đào tạo nào không tuyển học sinh trung học phổ thông?", options: ["Học viện Hậu cần", "Học viện Lục quân", "Học viện Biên phòng", "Học viện Quân y"], a: 1}, 
+        {q: "Hạ sĩ quan, binh sĩ tại ngũ theo quy định của pháp luật về nghĩa vụ quân sự thuộc đối tượng tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội nếu thời gian phục vụ tại ngũ (tính đến tháng 4 năm tuyển sinh)", options: ["đủ 6 tháng trở lên.", "đủ 9 tháng trở lên.", "đủ 12 tháng trở lên.", "đủ 15 tháng trở lên."], a: 2}, 
+        {q: "Quân nhân chuyên nghiệp, công nhân và viên chức quốc phòng thuộc đối tượng tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội nếu thời gian phục vụ trong Quân đội (tính đến tháng 9 năm tuyển sinh)", options: ["đủ 6 tháng trở lên.", "đủ 12 tháng trở lên.", "đủ 18 tháng trở lên.", "đủ 24 tháng trở lên."], a: 1}, 
+        {q: "Thanh niên ngoài Quân đội dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội phải có độ tuổi (tính đến năm dự tuyển)", options: ["không quá 20 tuổi.", "không quá 21 tuổi.", "không quá 22 tuổi.", "không quá 23 tuổi."], a: 1}, 
+        {q: "Quân nhân tại ngũ hoặc đã xuất ngũ và công dân hoàn thành nghĩa vụ tham gia Công an nhân dân dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội phải có độ tuổi (tính đến năm dự tuyển)", options: ["không quá 21 tuổi.", "không quá 22 tuổi.", "không quá 23 tuổi.", "không quá 24 tuổi."], a: 2}, 
+        {q: "Trong các phương thức sau, phương thức nào không áp dụng đối với tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội?", options: ["Xét tuyển thẳng, ưu tiên xét tuyển và xét tuyển học sinh giỏi cấp trung học phổ thông.", "Xét tuyển từ kết quả kì thi đánh giá năng lực do các trường đại học trong nước tổ chức.", "Xét tuyển từ kết quả kì thi đánh giá năng lực do các trường đại học nước ngoài tổ chức.", "Xét tuyển từ kì thi đánh giá năng lực do Bộ Quốc phòng tổ chức."], a: 2}, 
+        {q: "Thí sinh dự tuyển sinh đào tạo cán bộ cấp phân đội trình độ đại học, cao đẳng hệ chính quy trong các trường Quân đội", options: ["đều phải qua sơ tuyển.", "không phải qua sơ tuyển nếu là học sinh giỏi cấp trung học phổ thông.", "không phải qua sơ tuyển nếu có anh (chị) ruột đã vào học một trường trong Quân đội.", "không phải qua sơ tuyển nếu bố (mẹ) đẻ là quân nhân."], a: 0}, 
+        {q: "Ngành nào trong các ngành sau được đào tạo ở Học viện An ninh nhân dân?", options: ["An ninh mạng và phòng chống tội phạm sử dụng công nghệ cao", "Trinh sát kĩ thuật", "Nghiệp vụ cảnh sát", "Kĩ thuật Công an nhân dân"], a: 0}, 
+        {q: "Trong các trường hợp sau, trường hợp nào không thuộc đối tượng tuyển sinh đào tạo trình độ đại học chính quy tuyển mới trong trường Công an?", options: ["Chỉ huy từ cấp đội trở lên thuộc Công an đơn vị, địa phương.", "Học sinh Trường Văn hoá.", "Chiến sĩ nghĩa vụ Công an.", "Công dân thường trú tại địa phương nơi đăng kí sơ tuyển."], a: 0}, 
+        {q: "Những công việc nào trong các công việc sau không có trong nội dung sơ tuyển thí sinh dự tuyển đào tạo trình độ đại học chính quy tuyển mới trong trường Công an?", options: ["Kiểm tra bằng tốt nghiệp và học bạ trung học phổ thông.", "Thẩm tra, xác minh, kết luận tiêu chuẩn chính trị.", "Kiểm tra sức khoẻ, năng khiếu.", "Chụp ảnh bố đẻ và mẹ đẻ của thí sinh."], a: 3}, 
+        {q: "Một trong chức năng, nhiệm vụ của Bộ Quốc phòng là", options: ["tham mưu chiến lược về các chủ trương, chính sách...", "tham mưu với Đảng và Nhà nước về đường lối, nhiệm vụ quân sự, quốc phòng bảo vệ Tổ quốc.", "tham mưu, chỉ đạo xây dựng nền quốc phòng toàn dân.", "tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng..."], a: 1}, 
+        {q: "Một trong chức năng, nhiệm vụ của Bộ Tổng tham mưu Quân đội nhân dân Việt nam là", options: ["tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng, sẵn sàng chiến đấu", "tham mưu chiến lược về các chủ trương, chính sách...", "quản lí nhà nước về lĩnh vực quân sự, quốc phòng...", "tổ chức thực hiện việc xây dựng, quản lí..."], a: 0}, 
+        {q: "Một trong chức năng, nhiệm vụ của Tổng cục chính trị Quân đội nhân dân Việt nam là", options: ["giúp Quân uỷ Trung ương quyết định những chủ trương, biện pháp lớn về công tác Đảng, công tác chính trị trong Quân đội.", "quản lí nhà nước về lĩnh vực quân sự, quốc phòng trong phạm vi cả nước.", "chỉ huy, điều hành và tổ chức, chỉ đạo phát triển Quân đội nhân dân, Dân quân tự vệ.", "tổ chức thực hiện việc xây dựng, quản lí, chỉ huy Quân đội nhân dân, Dân quân tự vệ."], a: 0}, 
+        {q: "Một trong chức năng, nhiệm vụ của quân khu là", options: ["Tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng, sẵn sàng chiến đấu.", "Tham mưu, chỉ đạo xây dựng lực lượng phòng không, không quân, hải quân", "Tham mưu, chỉ đạo xây dựng nền quốc phòng toàn dân.", "Tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng chuyên ngành..."], a: 2}, 
+        {q: "Một trong chức năng, nhiệm vụ của quân đoàn là", options: ["trực tiếp chiến đấu hoặc bảo đảm chiến đấu, có vũ khí, trang bị kĩ thuật và chiến thuật riêng.", "tham mưu, chỉ đạo huấn luyện, xây dựng, phát triển lực lượng chuyên ngành...", "có thể tác chiến độc lập hoặc đảm nhiệm một hướng chiến dịch.", "tham gia tác chiến hiệp đồng quân, binh chủng."], a: 1}, 
+        {q: "Cho thông tin sau: “Quân hiệu của Quân đội nhân dân Việt Nam là (.....) của Quân đội nhân dân Việt Nam.” Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["biểu trưng", "biểu tượng", "hình tượng", "hình ảnh"], a: 1}, 
+        {q: "Quân hiệu của Quân đội nhân dân Việt Nam hình tròn, có đường kính", options: ["36 mm hoặc 33 mm hoặc 28 mm.", "38 mm hoặc 35 mm hoặc 30 mm.", "40 mm hoặc 37 mm hoặc 32 mm.", "42 mm hoặc 39 mm hoặc 34 mm."], a: 0}, 
+        {q: "Hạ sĩ quan Quân đội nhân dân Việt Nam có", options: ["hai bậc: Hạ sĩ, Trung sĩ.", "hai bậc: Trung sĩ, Thượng sĩ.", "ba bậc: Hạ sĩ, Trung sĩ, Thượng sĩ.", "bốn bậc: Hạ sĩ, Trung sĩ, Thượng sĩ, Đại sĩ."], a: 2}, 
+        {q: "Một trong chức năng, nhiệm vụ của Bộ Công an là", options: ["bảo vệ các khu vực làm việc, các hoạt động, hội nghị của Đảng, Nhà nước Việt Nam.", "tham mưu với Đảng, Nhà nước về bảo vệ an ninh quốc gia, bảo đảm trật tự, an toàn xã hội.", "tham mưu, hướng dẫn và tổ chức thực hiện quản lí nhà nước về trật tự xã hội.", "thực hiện biện pháp vũ trang bảo vệ an ninh quốc gia, bảo đảm trật tự, an toàn xã hội."], a: 1}, 
+        {q: "Công an hiệu của Công an nhân dân Việt Nam hình tròn, có đường kính", options: ["34 mm.", "35 mm.", "36 mm.", "37 mm."], a: 2}, 
+        {q: "Bên ngoài Công an hiệu của Công an nhân dân Việt Nam có cành tùng kép màu vàng bao quanh liền thành một khối", options: ["cao 52 mm, rộng 62 mm", "cao 54 mm, rộng 64 mm", "cao 56 mm, rộng 66 mm", "cao 58 mm, rộng 68 mm"], a: 1}, 
+        {q: "Sĩ quan chuyên môn kĩ thuật Công an nhân dân Việt Nam cấp tá", options: ["có một bậc: Thiếu tá.", "có ba bậc: Thiếu tá, Trung tá, Thượng tá.", "có hai bậc: Thiếu tá,Trung tá.", "có bốn bậc: Thiếu tá, Trung tá, Thượng tá, Đại tá."], a: 1}, 
+        {q: "Cho thông tin sau: “Phù hiệu Công an nhân dân Việt Nam là (…..) quy định để chỉ tổ chức, lực lượng.” Từ ngữ cần điền vào chỗ (.....) trong câu trên là", options: ["dấu hiệu", "lô-gô", "hình hiệu", "hình ảnh"], a: 0}, 
+        {q: "Quần áo, mũ kê pi và cà vạt của Cảnh sát giao thông Việt Nam có màu", options: ["xanh rêu.", "lúa chín vàng.", "vàng.", "xanh lam."], a: 1}, 
+        {q: "Ngắm bắn là xác định góc bắn và hướng bắn cho súng để đưa quỹ đạo đường đạn đi qua", options: ["mục tiêu.", "điểm định bắn trúng.", "mục tiêu định bắn trúng.", "điểm định bắn trúng trên mục tiêu."], a: 3}, 
+        {q: "Đường ngắm cơ bản là đường thẳng từ mắt người ngắm qua điểm chính giữa mép trên khe ngắm đến", options: ["mép trên đầu ngắm.", "điểm chính giữa mép trên đầu ngắm.", "mục tiêu.", "điểm chính giữa mục tiêu."], a: 1}, 
+        {q: "Điểm được xác định trước sao cho khi ngắm vào điểm đó để bắn thì quỹ đạo đường đạn đi qua điểm định bắn trúng trên mục tiêu được gọi là", options: ["điểm ngắm đúng.", "điểm ngắm chụm.", "điểm ngắm trúng.", "điểm ngắm cơ bản."], a: 0}, 
+        {q: "Đường ngắm đúng là đường ngắm cơ bản được dóng vào điểm ngắm đã xác định với điều kiện", options: ["mặt súng thăng bằng.", "mặt súng được cố định.", "nòng súng thăng bằng.", "nòng súng được cố định."], a: 0}, 
+        {q: "Khi đường ngắm cơ bản đã chính xác và đã có điểm ngắm đúng, nếu mặt súng nghiêng về bên nào thì điểm chạm trên mục tiêu sẽ", options: ["lệch và thấp về bên đó", "lệch và cao về bên đó.", "lệch về bên đó.", "cao về bên đó."], a: 2}, 
+        {q: "Động tác nằm bắn không tì súng tiểu liên AK gồm:", options: ["động tác chuẩn bị bắn, động tác bắn, động tác thôi bắn.", "động tác chuẩn bị bắn, động tác bắn, động tác đứng dậy.", "động tác lắp đạn, động tác bắn, động tác tháo đạn.", "động tác gương súng, động tác ngắm, động tác bóp cò."], a: 0}, 
+        {q: "Khẩu lệnh bắt đầu thực hiện động tác nằm bắn súng tiểu liên AK (có tì hoặc không có tì) là:", options: ["“Nằm bắn”.", "“Nằm chuẩn bị bắn”.", "“Chuẩn bị”.", "“Chuẩn bị bắn”."], a: 1}, 
+        {q: "Trong chuẩn bị tư thế nằm bắn không tì súng tiểu liên AK, khi nghe dứt khẩu lệnh, người bắn về tư thế xách súng, sau đó thực hiện", options: ["2 cử động.", "3 cử động.", "4 cử động.", "5 cử động."], a: 1}, 
+        {q: "Ở cử động 1 chuẩn bị tư thế động tác nằm bắn, người bắn bước chân phải lên một bước dài chếch theo hướng mũi bàn chân phải, dùng mũi bàn chân trái làm trụ, xoay gót bàn chân trái sang trái để người hướng theo hướng", options: ["gót bàn chân trái.", "gót bàn chân phải.", "mũi bàn chân trái.", "mũi bàn chân phải."], a: 3}, 
+        {q: "Ở cử động 2 chuẩn bị tư thế động tác nằm bắn, người bắn hạ cẳng tay trái xuống đất, khuỷu tay ở phía trước, cách hướng bàn chân phải khoảng", options: ["10 cm.", "15 cm.", "20 cm.", "25 cm."], a: 1}, 
+        {q: "Cho thông tin sau: “Trong động tác lắp đạn nằm bắn không tì súng tiểu liên AK, người bắn dùng tay phải tháo hộp tiếp đạn không có đạn ở súng ra, đưa cho tay trái, (...) bàn tay trái kẹp hộp tiếp đạn vào má phải ốp lót tay sao cho cửa hộp tiếp đạn quay vào thân người, sống hộp tiếp đạn hướng xuống đất. Từ ngữ cần điền vào chỗ (...) trong câu trên là:", options: ["dùng ngón út và ngón áp út", "dùng ngón áp út và ngón giữa", "dùng ngón giữa và ngón cái", "dùng ngón trỏ và ngón cái ."], a: 1}, 
+        {q: "Khi gương súng trong động tác nằm bắn không tì súng tiểu liên AK phải bảo đảm các yếu tố:", options: ["“bằng, chắc, đều”.", "“chắc, đều, bền”.", "“bằng, chắc, đều, bền”.", "“bằng, chắc, đều, êm”."], a: 2}, 
+        {q: "Khi thực hiện động tác ngắm trong kĩ thuật nằm bắn không tì súng tiểu liên AK cần", options: ["áp má phải vào báng súng với lực vừa phải.", "tránh áp má phải vào báng súng.", "áp má phải vào báng súng thật chặt.", "gối má phải lên báng súng."], a: 0}, 
+        {q: "Khi thực hiện động tác ngắm trong kĩ thuật nằm bắn không tì súng tiểu liên AK người bắn", options: ["có thể nheo một mắt hoặc mở cả hai mắt.", "bắt buộc phải nheo mắt trái.", "bắt buộc phải nheo mắt phải.", "bắt buộc phải mở hai mắt."], a: 0}, 
+        {q: "Cho thông tin sau: “Trong kĩ thuật nằm bắn không tì súng tiểu liên AK, khi bóp cò cần dùng (…) của ngón trỏ tay phải để bóp cò, mặt trong ngón tay trỏ sát gần vào tay cầm. Từ ngữ cần điền vào chỗ (…) trong câu trên là:", options: ["phần cuối đốt thứ hai, đầu đốt thứ ba", "phần cuối đốt thứ nhất, đầu đốt thứ hai", "phần giữa đốt thứ nhất", "phần giữa đốt thứ hai"], a: 1}, 
+        {q: "Cho thông tin sau: “Trong kĩ thuật nằm bắn không tì súng tiểu liên AK, khi bóp cò cần bảo đảm (…) theo trục nòng súng đến khi đạn nổ.", options: ["êm, đều, từ từ, thẳng về sau", "êm, đều, nhanh, thẳng về sau", "êm, đều, từ từ, thẳng", "êm, đều, nhanh, thẳng"], a: 0}, 
+        {q: "Kết quả ngắm chụm xếp loại Giỏi nếu ba điểm chấm nằm trong vòng tròn, đường kính", options: ["2 mm.", "3 mm.", "4 mm.", "5 mm."], a: 3}, 
+        {q: "Kết quả ngắm chụm xếp loại Đạt nếu ba điểm chấm nằm trong vòng tròn, đường kính", options: ["7 mm.", "8 mm.", "9 mm.", "10 mm."], a: 3}, 
+        {q: "Khung bia nền trắng (để dán bia số 4) có kích thước là", options: ["70 cm x 70 cm.", "75 cm x 75 cm.", "80 cm x 80 cm.", "85 cm x 85 cm."], a: 1}, 
+        {q: "Cự li bắn bia mục tiêu số 4 là", options: ["150 m.", "130 m.", "120 m.", "100 m."], a: 3}, 
+        {q: "Trong bài bắn vào mục tiêu bia số 4, kết quả bắn xếp loại Không đạt nếu tổng số điểm sau 3 phát bắn dưới", options: ["15 điểm.", "16 điểm.", "17 điểm.", "18 điểm."], a: 0}, 
         {q: "Tác GIẢ của Web này là người thích bánh mì Pita đúng hay sai?", options: ["Đúng", "Sai"], a: 0}
     ];
 
@@ -359,5 +392,4 @@
     }
 </script>
 </body>
-
 </html>
