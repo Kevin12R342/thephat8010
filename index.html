@@ -1,31 +1,4 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GDQP - Bánh Mì Pita (Mobile Fixed)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Palette màu hiện đại */
-            --bg-body: #051010;
-            --bg-gradient: radial-gradient(circle at 50% 10%, #1a3c3c 0%, #051010 100%);
-            
-            --glass-bg: rgba(22, 43, 43, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-blur: 12px;
-            
-            --accent: #00e5ff; /* Cyan sáng neon */
-            --accent-glow: rgba(0, 229, 255, 0.4);
-            
-            --accent-red: #ff5252;
-            --accent-blue: #448aff;
-            
-            --text-light: #ffffff;
-            --text-dim: #b0bec5;
-        }
-
-        * { box-sizing: border-box; font-family: 'Be Vietnam Pro', sans-serif; -webkit-tap-highlight-color: transparent; }
+amily: 'Be Vietnam Pro', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background: var(--bg-body);
@@ -182,17 +155,66 @@
             display: flex; justify-content: center; align-items: center; padding: 20px;
         }
         .start-form {
-            background: rgba(22, 43, 43, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 25px;
-            width: 100%; max-width: 480px; 
+            background: rgba(22, 43, 43, 0.85); /* Đậm hơn chút để đọc chữ dễ hơn */
+            backdrop-filter: blur(25px);
+            padding: 30px 40px; border-radius: 25px;
+            width: 100%; max-width: 550px; /* Rộng hơn chút để chứa câu quote dài */
             border: 1px solid var(--accent);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-            display: flex; flex-direction: column; gap: 20px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8); 
+            display: flex; flex-direction: column; gap: 15px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh; /* Phòng trường hợp màn hình điện thoại bé */
+            overflow-y: auto;
         }
+        
+        /* CLOCK STYLES */
+        .realtime-box {
+            text-align: center;
+            margin-bottom: 5px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .rt-time {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent-glow);
+            line-height: 1.1;
+        }
+        .rt-date {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        /* QUOTE BOX STYLE */
+        .quote-box {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 3px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 5px;
+        }
+        .quote-label {
+            font-size: 0.75rem; color: var(--accent); font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .quote-text {
+            font-size: 0.9rem; font-style: italic; color: #e0f2f1; line-height: 1.5; text-align: justify;
+        }
+        .quote-author {
+            text-align: right; font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-top: 5px;
+        }
+
         .inp-field {
-            width: 100%; padding: 16px; background: rgba(0,0,0,0.3); 
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); 
             border: 1px solid var(--glass-border);
             color: white; border-radius: 12px; outline: none;
             transition: 0.3s;
@@ -200,7 +222,7 @@
         .inp-field:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
 
         .mode-btn {
-            padding: 20px; border-radius: 15px; border: 1px solid var(--glass-border);
+            padding: 12px; border-radius: 12px; border: 1px solid var(--glass-border);
             background: rgba(255,255,255,0.05); color: var(--text-dim); cursor: pointer;
             font-weight: 600; transition: 0.3s; text-align: center; position: relative; overflow: hidden;
         }
@@ -219,14 +241,14 @@
         }
         .result-content {
             background: #162b2b; padding: 40px; border-radius: 30px;
-            width: 100%; max-width: 500px; text-align: center;
+            width: 100%; max-width: 550px; text-align: center;
             border: 2px solid var(--accent);
             box-shadow: 0 0 50px var(--accent-glow);
             animation: popIn 0.4s ease-out;
         }
         @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
 
-        /* --- MOBILE RESPONSIVE FIX (ĐÃ SỬA LỖI CHE CÂU D) --- */
+        /* --- MOBILE RESPONSIVE FIX --- */
         @media (max-width: 900px) {
             body { overflow: auto !important; display: block; height: auto; }
             .app-container { display: block; padding: 15px; padding-top: 80px; height: auto; min-height: 100vh; overflow: visible; }
@@ -239,12 +261,12 @@
             .col-nav.open { right: 0; }
             .col-main { width: 100%; height: auto; display: block; }
             
-            /* SỬA LỖI Ở ĐÂY: Thêm padding-bottom lớn (130px) để không bị nút che */
+            /* PADDING BOTTOM ĐỂ KHÔNG BỊ CHE BỞI NÚT */
             .question-box { 
                 border: none; 
                 border-radius: 20px; 
                 padding: 25px; 
-                padding-bottom: 130px; /* Quan trọng: Đẩy nội dung lên */
+                padding-bottom: 130px; 
                 background: var(--glass-bg); 
                 overflow: visible; 
                 height: auto; 
@@ -267,6 +289,11 @@
                 background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 90; display: none;
             }
             #overlay-bg.show { display: block; }
+            
+            /* Chỉnh lại Start Screen trên mobile */
+            .start-form { padding: 25px; max-width: 100%; }
+            .rt-time { font-size: 2rem; }
+            .quote-text { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -274,24 +301,36 @@
 
 <div id="start-screen">
     <div class="start-form">
-        <h2 style="text-align:center; color:var(--accent); margin:0; text-transform: uppercase; letter-spacing: 2px;">Luyện thi GDQP</h2>
-        <div style="text-align:center; font-size:0.9rem; color:var(--text-dim); margin-bottom:10px;">Giao diện Pro Premium</div>
+        <h2 style="text-align:center; color:var(--accent); margin:0; text-transform: uppercase; letter-spacing: 2px; font-size: 1.2rem;">Luyện thi GDQP</h2>
+        
+        <div class="realtime-box">
+            <div class="rt-time" id="rt-time">00:00:00</div>
+            <div class="rt-date" id="rt-date">Đang tải...</div>
+        </div>
+
+        <div class="quote-box">
+            <div class="quote-label">★ THÔNG ĐIỆP MAY MẮN ★</div>
+            <div class="quote-text">
+                "Thất bại không phải là phủ nhận nỗ lực, mà đôi khi chỉ là sự trêu đùa của may mắn. Đừng coi đó là dấu chấm hết, hãy xem như trạm dừng chân để nạp đầy kinh nghiệm và động lực. Cậu chỉ thực sự thua cuộc khi bạn chấp nhận buông xuôi. Đừng khóc vì thất bại ngày hôm nay hãy để những giọt nước mắt đó cho sự hạnh phúc của tương lai."
+            </div>
+            <div class="quote-author">— PITA —</div>
+        </div>
         
         <input type="text" id="username" class="inp-field" placeholder="Nhập tên chiến sĩ (Bắt buộc)...">
         <input type="text" id="yt-link" class="inp-field" placeholder="Link nhạc YouTube (Tùy chọn)">
         
-        <div style="display:flex; gap:15px;">
+        <div style="display:flex; gap:10px;">
             <div class="mode-btn active" id="mode-practice" onclick="selectMode('practice')" style="flex:1;">
-                <div style="font-size:1.1rem; margin-bottom: 5px;">LUYỆN TẬP</div>
-                <div style="font-size:0.75rem; font-weight:400; opacity:0.7;">Full ngân hàng câu hỏi<br>Biết đáp án ngay</div>
+                <div style="font-size:1rem; margin-bottom: 2px;">LUYỆN TẬP</div>
+                <div style="font-size:0.7rem; font-weight:400; opacity:0.7;">Full ngân hàng<br>Biết đáp án ngay</div>
             </div>
             <div class="mode-btn" id="mode-exam" onclick="selectMode('exam')" style="flex:1;">
-                <div style="font-size:1.1rem; margin-bottom: 5px;">THỰC CHIẾN</div>
-                <div style="font-size:0.75rem; font-weight:400; opacity:0.7;">30 Câu ngẫu nhiên<br>Áp lực thời gian</div>
+                <div style="font-size:1rem; margin-bottom: 2px;">THỰC CHIẾN</div>
+                <div style="font-size:0.7rem; font-weight:400; opacity:0.7;">30 Câu ngẫu nhiên<br>Áp lực thời gian</div>
             </div>
         </div>
 
-        <button class="btn btn-next" style="width:100%; margin-top: 10px; font-size: 1.1rem;" onclick="startQuiz()">VÀO LÀM BÀI NGAY</button>
+        <button class="btn btn-next" style="width:100%; margin-top: 5px; font-size: 1rem;" onclick="startQuiz()">VÀO LÀM BÀI NGAY</button>
     </div>
 </div>
 
@@ -301,7 +340,7 @@
         <div id="res-score" style="font-size:3.5rem; font-weight:800; color:white; margin:15px 0; text-shadow: 0 0 20px var(--accent-glow);">0.0</div>
         <div style="font-size:1.1rem; margin-bottom:25px; color:var(--text-dim);">ĐIỂM SỐ (Thang 10)</div>
         
-        <div id="res-msg" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:25px; font-style:italic; color:#e0f2f1; line-height: 1.5;">
+        <div id="res-msg" style="background:rgba(255,255,255,0.05); padding:25px; border-radius:15px; margin-bottom:25px; font-style:italic; color:#e0f2f1; line-height: 1.6; text-align: justify; border: 1px solid rgba(255,255,255,0.1);">
             </div>
 
         <div id="res-img" style="margin-bottom:25px; display:none;">
@@ -373,6 +412,25 @@
 </div>
 
 <script>
+    // --- CLOCK LOGIC ---
+    function updateRealTime() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        
+        const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const dayName = days[now.getDay()];
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+
+        document.getElementById('rt-time').innerText = `${h}:${m}:${s}`;
+        document.getElementById('rt-date').innerText = `${dayName}, ${day}/${month}/${year}`;
+    }
+    setInterval(updateRealTime, 1000);
+    updateRealTime();
+
     // --- DỮ LIỆU CÂU HỎI ---
     const originalBank = [
         {q: "Trong chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc và cùng quân dân Cam-pu-chia chiến thắng chế độ diệt chủng (gọi tắt là chiến tranh bảo vệ biên giới Tây Nam của Tổ quốc), tập đoàn Pôn Pốt – Iêng Xary phát động chiến tranh xâm lược Việt Nam vào ngày", options: ["30-4-1975.", "30-4-1978.", "30-4-1977.", "30-4-1976."], a: 2}, 
